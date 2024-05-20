@@ -1,15 +1,24 @@
+import { Header } from "./components/Header";
 import { Navbar } from "./components/Navbar";
-import {Route, Routes} from "react-router-dom"
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
-    <div>
-      <Navbar/>
-      <Routes>
-        <Route path={"/"} element={<div>home</div>}/>
-        <Route path={"/login"} element={<div>login</div>}/>
-        <Route path={"/signup"} element={<div>signup</div>}/>
-      </Routes>
+    <div className="min-h-screen bg-gray-100 relative flex flex-col">
+      <Header /> {}
+      <div className="flex flex-grow mt-16"> {}
+        <Navbar />
+        <div className="flex-grow p-4 ml-60">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </div>
+      </div>
     </div>
   );
 }
