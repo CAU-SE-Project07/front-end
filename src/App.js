@@ -7,7 +7,7 @@ import Signup from "./pages/Signup";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 relative flex flex-col">
+    <div className="min-h-screen relative flex flex-col">
       <Header /> {}
       <div className="flex flex-grow mt-16"> {}
         <Navbar />

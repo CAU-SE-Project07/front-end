@@ -17,7 +17,7 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="fixed left-0 top-16 h-full w-60 border-r border-black flex flex-col justify-start pt-4">
+    <nav className="fixed left-0 top-20 h-full w-60 border-r border-black flex flex-col justify-start pt-4">
       <div className="flex flex-col gap-8 items-center">
         <Link to="/" className={getNavLinkClass("/")} style={location.pathname === "/" ? activeLinkStyle : {}}>Home</Link>
         <Link to="/login" className={getNavLinkClass("/login")} style={location.pathname === "/login" ? activeLinkStyle : {}}>Login</Link>

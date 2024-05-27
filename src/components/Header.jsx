@@ -23,7 +23,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="w-full h-16 bg-gray-800 text-white flex items-center justify-between px-4 fixed top-0 left-0 z-10">
+    <header className="w-full h-20 bg-gray-800 text-white flex items-center justify-between px-4 fixed top-0 left-0 z-10">
       <div className="flex items-center">
         <h1>OH자일 이슈 관리 시스템</h1>
       </div>
