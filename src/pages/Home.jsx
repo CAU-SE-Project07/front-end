@@ -7,16 +7,16 @@ const Home = () => {
   const itemsPerPage = 8;
 
   const dummyData = [
-    { issueNum: 1, title: 'Issue 1', reportedDate: '2023-05-01', assignee: 'John Doe', status: 'Open' },
-    { issueNum: 2, title: 'Issue 2', reportedDate: '2023-05-02', assignee: 'Jane Smith', status: 'Closed' },
-    { issueNum: 3, title: 'Issue 3', reportedDate: '2023-05-03', assignee: 'Alice Johnson', status: 'In Progress' },
-    { issueNum: 4, title: 'Issue 4', reportedDate: '2023-05-04', assignee: 'Bob Lee', status: 'Open' },
-    { issueNum: 5, title: 'Issue 5', reportedDate: '2023-05-05', assignee: 'Chris Kim', status: 'Closed' },
-    { issueNum: 6, title: 'Issue 6', reportedDate: '2023-05-06', assignee: 'David Park', status: 'In Progress' },
-    { issueNum: 7, title: 'Issue 7', reportedDate: '2023-05-07', assignee: 'Eva Green', status: 'Open' },
-    { issueNum: 8, title: 'Issue 8', reportedDate: '2023-05-08', assignee: 'Frank White', status: 'Closed' },
-    { issueNum: 9, title: 'Issue 9', reportedDate: '2023-05-09', assignee: 'Grace Brown', status: 'In Progress' },
-    { issueNum: 10, title: 'Issue 10', reportedDate: '2023-05-10', assignee: 'Hank Black', status: 'Open' },
+    { issueNum: 1, title: 'Issue 1', reportedDate: '2024-05-01', assignee: 'John Doe', status: 'Open' },
+    { issueNum: 2, title: 'Issue 2', reportedDate: '2024-05-02', assignee: 'Jane Smith', status: 'Closed' },
+    { issueNum: 3, title: 'Issue 3', reportedDate: '2024-05-03', assignee: 'Alice Johnson', status: 'In Progress' },
+    { issueNum: 4, title: 'Issue 4', reportedDate: '2024-05-04', assignee: 'Bob Lee', status: 'Open' },
+    { issueNum: 5, title: 'Issue 5', reportedDate: '2024-05-05', assignee: 'Chris Kim', status: 'Closed' },
+    { issueNum: 6, title: 'Issue 6', reportedDate: '2024-05-06', assignee: 'David Park', status: 'In Progress' },
+    { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'Eva Green', status: 'Open' },
+    { issueNum: 8, title: 'Issue 8', reportedDate: '2024-05-08', assignee: 'Frank White', status: 'Closed' },
+    { issueNum: 9, title: 'Issue 9', reportedDate: '2024-05-09', assignee: 'Grace Brown', status: 'In Progress' },
+    { issueNum: 10, title: 'Issue 10', reportedDate: '2024-05-10', assignee: 'Hank Black', status: 'Open' },
   ];
 
   // 현재 페이지의 데이터 계산
@@ -31,18 +31,19 @@ const Home = () => {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-center mb-4">
+    <div className="">
+      <div className="flex justify-center p-2">
         <input 
           type="text" 
           placeholder="이슈 검색" 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border rounded px-4 py-2 w-full max-w-xl"
+          style={{ height: '4rem' }}
         />
       </div>
-      <div className="flex justify-center mb-4">
-        <fieldset className="border p-4 w-full max-w-xl">
+      <div className="flex justify-center p-2">
+        <fieldset className="border p-4 w-full max-w-xl bg-white">
           <div className="flex justify-center space-x-6">
             <label className="space-x-2">
               <input 
@@ -109,7 +110,7 @@ const Home = () => {
         <table className="min-w-full bg-white">
           <thead className="bg-gray-200">
             <tr>
-              <th className="py-2 px-4 border-b">Issue num</th>
+              <th className="py-2 px-4 border-b"># Issue num</th>
               <th className="py-2 px-4 border-b">Title</th>
               <th className="py-2 px-4 border-b">Reported Date</th>
               <th className="py-2 px-4 border-b">Assignee</th>
