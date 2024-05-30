@@ -4,10 +4,10 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import IssueRegister from "./pages/IssueRegister"; // 새로 추가
-import Stats from "./pages/Stats"; // 새로 추가
-import MyIssues from "./pages/MyIssues"; // 새로 추가
-import Admin from "./pages/Admin"; // 새로 추가
+import IssueRegister from "./pages/IssueRegister";
+import Stats from "./pages/Stats";
+import MyIssues from "./pages/MyIssues";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -20,10 +20,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/issue-register" element={<IssueRegister />} /> {/* 새로 추가 */}
-            <Route path="/stats" element={<Stats />} /> {/* 새로 추가 */}
-            <Route path="/my-issues" element={<MyIssues />} /> {/* 새로 추가 */}
-            <Route path="/admin" element={<Admin />} /> {/* 새로 추가 */}
+            <Route path="/issue-register" element={<IssueRegister />} /> 
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/my-issues" element={<MyIssues />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </div>
       </div>

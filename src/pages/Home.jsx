@@ -7,16 +7,16 @@ const Home = () => {
   const itemsPerPage = 8;
 
   const dummyData = [
-    { issueNum: 1, title: 'Issue 1', reportedDate: '2024-05-01', assignee: 'John Doe', status: 'Open' },
-    { issueNum: 2, title: 'Issue 2', reportedDate: '2024-05-02', assignee: 'Jane Smith', status: 'Closed' },
-    { issueNum: 3, title: 'Issue 3', reportedDate: '2024-05-03', assignee: 'Alice Johnson', status: 'In Progress' },
-    { issueNum: 4, title: 'Issue 4', reportedDate: '2024-05-04', assignee: 'Bob Lee', status: 'Open' },
-    { issueNum: 5, title: 'Issue 5', reportedDate: '2024-05-05', assignee: 'Chris Kim', status: 'Closed' },
-    { issueNum: 6, title: 'Issue 6', reportedDate: '2024-05-06', assignee: 'David Park', status: 'In Progress' },
-    { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'Eva Green', status: 'Open' },
-    { issueNum: 8, title: 'Issue 8', reportedDate: '2024-05-08', assignee: 'Frank White', status: 'Closed' },
-    { issueNum: 9, title: 'Issue 9', reportedDate: '2024-05-09', assignee: 'Grace Brown', status: 'In Progress' },
-    { issueNum: 10, title: 'Issue 10', reportedDate: '2024-05-10', assignee: 'Hank Black', status: 'Open' },
+    { issueNum: 1, title: 'Issue 1', reportedDate: '2024-05-01', assignee: 'John Doe', status: 'new' },
+    { issueNum: 2, title: 'Issue 2', reportedDate: '2024-05-02', assignee: 'Jane Smith', status: 'closed' },
+    { issueNum: 3, title: 'Issue 3', reportedDate: '2024-05-03', assignee: 'Alice Johnson', status: 'resolved' },
+    { issueNum: 4, title: 'Issue 4', reportedDate: '2024-05-04', assignee: 'Bob Lee', status: 'new' },
+    { issueNum: 5, title: 'Issue 5', reportedDate: '2024-05-05', assignee: 'Chris Kim', status: 'new' },
+    { issueNum: 6, title: 'Issue 6', reportedDate: '2024-05-06', assignee: 'David Park', status: 'fixed' },
+    { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'Eva Green', status: 'new' },
+    { issueNum: 8, title: 'Issue 8', reportedDate: '2024-05-08', assignee: 'Frank White', status: 'resolved' },
+    { issueNum: 9, title: 'Issue 9', reportedDate: '2024-05-09', assignee: 'Grace Brown', status: 'assigned' },
+    { issueNum: 10, title: 'Issue 10', reportedDate: '2024-05-10', assignee: 'Hank Black', status: 'new' },
   ];
 
   // 현재 페이지의 데이터 계산
@@ -32,7 +32,7 @@ const Home = () => {
 
   return (
     <div className="">
-      <div className="flex justify-center p-2">
+      <div className="flex justify-center p-4">
         <input 
           type="text" 
           placeholder="이슈 검색" 
@@ -54,7 +54,7 @@ const Home = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-checkbox"
               />
-              all
+              new
             </label>
             <label className="space-x-2">
               <input 
@@ -65,7 +65,7 @@ const Home = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-checkbox"
               />
-              open
+              assigned
             </label>
             <label className="space-x-2">
               <input 
@@ -76,7 +76,7 @@ const Home = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-checkbox"
               />
-              closed
+              fixed
             </label>
             <label className="space-x-2">
               <input 
@@ -87,7 +87,7 @@ const Home = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-checkbox"
               />
-              in progress
+              resolved
             </label>
             <label className="space-x-2">
               <input 
@@ -98,7 +98,7 @@ const Home = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-checkbox"
               />
-              assigned
+              closed
             </label>
           </div>
         </fieldset>

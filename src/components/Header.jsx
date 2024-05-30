@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logoImage from '../assets/images/logo.png'; 
 
 export const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,7 +26,8 @@ export const Header = () => {
   return (
     <header className="w-full h-20 bg-gray-800 text-white flex items-center justify-between px-4 fixed top-0 left-0 z-10">
       <div className="flex items-center">
-        <h1>OH자일 이슈 관리 시스템</h1>
+        {/* <h1> 대신 img 태그를 사용하여 로고 이미지를 삽입합니다. */}
+        <img src={logoImage} alt="logo" className="h-24 pl-6" />
       </div>
       {isLoggedIn && (
         <div className="relative">
