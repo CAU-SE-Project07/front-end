@@ -1,0 +1,154 @@
+/* src/AdminPage/Admin.css */
+.admin-container {
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 0px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.project-form, .user-management {
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-group-inline label {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.form-group-inline input {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.role-selection {
+    display: flex;
+    align-items: center;
+    margin-top: 15px; /* Add margin-top for separation from the above inputs */
+}
+
+.role-group {
+    display: flex;
+    align-items: center;
+    margin-left: 50px; /* Add margin-left to provide space between the label and the first radio button */
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    margin-right: 70px; /* Increase the margin-right to provide space between each radio button-label set */
+}
+
+.radio-label input {
+    margin-right: 10px; /* Increase the margin-right to provide space between the radio button and its label */
+}
+
+
+.project-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.user-management {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-container input {
+    margin-bottom: 10px;
+}
+
+.add-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px;
+    align-self: center;
+    margin-top: 20px; /* Space between ADD button and input fields */
+}
+
+.add-button:hover {
+    background-color: #218838;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin-top: 20px; /* Space between ADD button and table */
+}
+
+.user-table th, .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.user-table th {
+    background-color: #f2f2f2;
+}
+
+.user-table th:first-child {
+    width: 60px;
+}
+
+.remove-accounts-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.remove-accounts-button:hover {
+    background-color: #c82333;
+}

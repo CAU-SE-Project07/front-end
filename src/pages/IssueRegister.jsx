@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './IssueUploadPage.css';
+import './IssueRegister.css';
 
 function IssueUploadPage() {
   const [title, setTitle] = useState('');
@@ -40,7 +40,7 @@ function IssueUploadPage() {
             type="text"
             id="title"
             value={title}
-            placehodler="제목을 입력하세요"
+            placeholder="제목을 입력하세요..."
             onChange={handleTitleChange}
           />
         </div>
@@ -49,7 +49,7 @@ function IssueUploadPage() {
           <textarea
             id="description"
             value={description}
-            placehodler="상세 설명을 입력하세요"
+            placeholder="상세 설명을 입력하세요..."
             onChange={handleDescriptionChange}
           />
         </div>
