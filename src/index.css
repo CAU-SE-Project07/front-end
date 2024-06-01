@@ -22,3 +22,9 @@ code {
   font-weight: normal;
   font-style: normal;
 }
+
+.container {
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 가운데 정렬을 위해 auto로 설정 */
+  padding: 0 20px; /* 좌우 여백 설정 */
+}

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const MyIssues = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // 페이지당 표시할 아이템 수, 필요에 따라 조정 가능
+
   const issues = [
     { issueNum: '00002', title: '', reportedDate: '14 Feb 2019', assignee: 'Rosie Pearson', status: 'Assigned' },
     { issueNum: '00008', title: '', reportedDate: '14 Feb 2019', assignee: 'Rosie Pearson', status: 'Assigned' },
@@ -8,10 +11,25 @@ const MyIssues = () => {
     // Add more issues as needed
   ];
 
+  // 현재 페이지의 데이터 계산
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentIssues = issues.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 페이지 번호를 렌더링하기 위한 로직
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(issues.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6">My issue</h1>
-      
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">
           <thead className="bg-gray-200">
@@ -24,7 +42,7 @@ const MyIssues = () => {
             </tr>
           </thead>
           <tbody>
-            {issues.map((issue, index) => (
+            {currentIssues.map((issue, index) => (
               <tr key={index}>
                 <td className="py-2 px-4 border-b">{issue.issueNum}</td>
                 <td className="py-2 px-4 border-b">{issue.title}</td>
@@ -40,27 +58,17 @@ const MyIssues = () => {
           </tbody>
         </table>
       </div>
-      
+
       <div className="flex justify-center mt-4">
-        <nav>
-          <ul className="inline-flex items-center -space-x-px">
-            <li>
-              <button className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">1</button>
-            </li>
-            <li>
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</button>
-            </li>
-            <li>
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">3</button>
-            </li>
-            <li>
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</button>
-            </li>
-            <li>
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">5</button>
-            </li>
-          </ul>
-        </nav>
+        {pageNumbers.map((pageNumber) => (
+          <button
+            key={pageNumber}
+            onClick={() => handlePageClick(pageNumber)}
+            className={`px-3 py-2 mx-1 border rounded cursor-pointer ${currentPage === pageNumber}`}
+          >
+            {pageNumber}
+          </button>
+        ))}
       </div>
     </div>
   );
