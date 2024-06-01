@@ -27,7 +27,7 @@ const MyIssues = () => {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">My issue</h1>
+      <h1 className="text-xl font-bold mb-6">My issue</h1>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">

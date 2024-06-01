@@ -24,12 +24,30 @@ const Signup = () => {
         setPasswordMatch(e.target.value === password);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 회원가입 처리 로직을 여기에 추가
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Confirm Password:', confirmPassword);
+        
+        try {
+            const response = await fetch('https://your-backend-url/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // 회원가입 성공 처리
+                console.log('회원가입 성공:', data);
+            } else {
+                // 회원가입 실패 처리
+                console.error('회원가입 실패:', data.error);
+            }
+        } catch (error) {
+            console.error('회원가입 요청 실패:', error);
+        }
     };
 
     return (

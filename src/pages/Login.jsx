@@ -19,12 +19,30 @@ const Login = () => {
         setRememberPassword(e.target.checked);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 로그인 처리 로직을 여기에 추가
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Remember Password:', rememberPassword);
+        
+        try {
+            const response = await fetch('/member/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // 로그인 성공 처리
+                console.log('로그인 성공:', data);
+            } else {
+                // 로그인 실패 처리
+                console.error('로그인 실패:', data.error);
+            }
+        } catch (error) {
+            console.error('로그인 요청 실패:', error);
+        }
     };
 
     return (

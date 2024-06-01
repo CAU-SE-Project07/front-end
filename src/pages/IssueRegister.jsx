@@ -17,16 +17,26 @@ function IssueUploadPage() {
     setPriority(e.target.value);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // 여기에 폼 제출 로직을 추가합니다.
-    console.log({ title, description, priority });
-  };
-
-  const handlePriorityFormSubmit = (e) => {
-    e.preventDefault();
-    // 우선 순위 폼 제출 로직을 추가합니다.
-    console.log({ priority });
+    try {
+      const response = await fetch('http://localhost:8080/api/issues', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, description, priority }),
+      });
+      if (response.ok) {
+        // 이슈가 성공적으로 생성된 경우
+        console.log('이슈가 성공적으로 생성되었습니다.');
+      } else {
+        // 오류가 발생한 경우
+        console.error('이슈 생성에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('API 호출 중 오류가 발생했습니다:', error);
+    }
   };
 
   return (
@@ -54,8 +64,6 @@ function IssueUploadPage() {
             className="w-full p-2 border rounded h-48"
           />
         </div>
-      </form>
-      <form onSubmit={handlePriorityFormSubmit} className="bg-[#DDF1FF] p-5 rounded-lg shadow-md w-full">
         <div className="mb-4">
           <label htmlFor="priority" className="block font-bold mb-2">우선 순위</label>
           <select
@@ -71,12 +79,12 @@ function IssueUploadPage() {
             <option value="trivial">trivial</option>
           </select>
         </div>
+        <button
+          type="submit"
+          className="bg-blue-900 text-white py-2 px-4 rounded mx-auto w-1/5" >
+          이슈 만들기
+        </button>
       </form>
-      <button
-        onClick={handlePriorityFormSubmit}
-        className="bg-blue-900 text-white py-2 px-4 rounded mx-auto w-1/5" >
-        이슈 만들기
-      </button>
     </div>
   );
 }

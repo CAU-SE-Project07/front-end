@@ -8,6 +8,7 @@ import IssueRegister from "./pages/IssueRegister";
 import Stats from "./pages/Stats";
 import MyIssues from "./pages/MyIssues";
 import Admin from "./pages/Admin";
+import IssueDetails from "./pages/IssueDetails";
 
 function App() {
   return (
@@ -66,6 +67,17 @@ function App() {
               <Navbar />
               <div className="flex-grow p-4 ml-60">
                 <Admin />
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/issue/:issueNum" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <IssueDetails />
               </div>
             </div>
           </>
