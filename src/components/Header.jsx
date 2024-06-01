@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import logoImage from '../assets/images/logo.png'; 
 
 export const Header = () => {
@@ -29,7 +30,7 @@ export const Header = () => {
         {/* <h1> 대신 img 태그를 사용하여 로고 이미지를 삽입합니다. */}
         <img src={logoImage} alt="logo" className="h-24 pl-6" />
       </div>
-      {isLoggedIn && (
+      {isLoggedIn ? (
         <div className="relative">
           <img
             src={userImage}
@@ -45,6 +46,11 @@ export const Header = () => {
               <div>developer</div>
             </div>
           )}
+        </div>
+      ) : (
+        <div className="flex items-center space-x-4">
+          <Link to="/login" className="text-white hover:text-gray-300">로그인</Link>
+          <Link to="/signup" className="text-white hover:text-gray-300">회원가입</Link>
         </div>
       )}
     </header>
