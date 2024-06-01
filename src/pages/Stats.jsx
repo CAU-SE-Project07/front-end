@@ -2,12 +2,13 @@ import React from 'react';
 
 const IssueDetails = () => {
   return (
-    <div className="grid gap-5 p-5 bg-white w-4/5 mx-auto font-sans" style={{ fontSize: '16px' }}>
-      <div className="bg-[#ADC8FF] p-5 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-6">이슈 확인 및 수정</h1>
+      <div className="grid gap-5 p-5 bg-white w-4/5 mx-auto">
+      <h2 className="text-2xl font-bold mb-2">이슈 확인 및 수정</h2>
+
+      <div className="bg-[#9AC8FF] p-5 rounded-lg shadow-md">
+        <h2 className="text-l font-semibold mb-2"># 이슈 번호</h2>
+        <h3 className="text-l font-medium mb-2">이슈 제목(Incorporate footnotes into Trac)</h3>
         <div className="border p-4 bg-gray-50 mb-5">
-          <h2 className="text-xl font-semibold mb-2"># 이슈 번호</h2>
-          <h3 className="text-lg font-medium mb-2">이슈 제목(Incorporate footnotes into Trac)</h3>
           <ul className="list-disc list-inside space-y-1">
             <li>Reporter</li>
             <li>Reported Date</li>
@@ -24,9 +25,9 @@ const IssueDetails = () => {
         </div>
       </div>
       
-      <div className="bg-[#ADC8FF] p-5 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-2">이슈 수정</h2>
+      <div className="bg-[#9AC8FF] p-5 rounded-lg shadow-md">
         <div className="mb-5">
-          <h2 className="text-2xl font-semibold mb-4">이슈 수정</h2>
           <div className="border p-4 bg-gray-50">
             <input type="text" placeholder="이슈 제목(Incorporate footnotes into Trac)" className="w-full p-2 mb-2 border rounded" />
             <textarea placeholder="수정할 내용을 적어주세요" className="w-full p-2 h-36 border rounded"></textarea>
@@ -34,7 +35,7 @@ const IssueDetails = () => {
         </div>
       </div>
 
-      <div className="bg-[#ADC8FF] p-5 rounded-lg shadow-md">
+      <div className="bg-[#9AC8FF] p-5 rounded-lg shadow-md">
         <div className="mb-5">
           <label className="block mb-1 font-semibold">우선 순위:</label>
           <select className="ml-2 p-2 border rounded">
@@ -63,9 +64,9 @@ const IssueDetails = () => {
         </div>
       </div>
 
-      <div className="bg-[#ADC8FF] p-5 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-2">Comment</h2>
+      <div className="bg-[#9AC8FF] p-5 rounded-lg shadow-md">
         <div className="mb-5">
-          <h2 className="text-2xl font-semibold mb-4">Comment</h2>
           <div className="border p-4 bg-gray-50">
             <input type="text" placeholder="User ID" className="w-full p-2 mb-2 border rounded" />
             <textarea placeholder="내용을 작성해주세요" className="w-full p-2 h-24 border rounded"></textarea>
@@ -74,7 +75,7 @@ const IssueDetails = () => {
         </div>
       </div>
 
-      <button className="w-2/5 mx-auto p-3 bg-blue-600 text-white rounded">변경 사항 적용하기</button>
+      <button className="w-1/5 mx-auto p-3 bg-blue-600 text-white rounded">변경 사항 적용하기</button>
     </div>
   );
 };

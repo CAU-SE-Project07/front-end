@@ -31,8 +31,8 @@ function IssueUploadPage() {
 
   return (
     <div className="grid gap-5 p-5 bg-white w-4/5 mx-auto">
-      <h1 className="text-2xl font-bold mb-4">이슈 등록</h1>
-      <form onSubmit={handleFormSubmit} className="bg-[#ADC8FF] p-5 rounded-lg shadow-md w-full">
+      <h1 className="text-2xl font-bold mb-2">이슈 등록</h1>
+      <form onSubmit={handleFormSubmit} className="bg-[#9AC8FF] p-5 rounded-lg shadow-md w-full">
         <div className="mb-4">
           <label htmlFor="title" className="block font-bold mb-2">제목</label>
           <input
@@ -55,7 +55,7 @@ function IssueUploadPage() {
           />
         </div>
       </form>
-      <form onSubmit={handlePriorityFormSubmit} className="bg-[#ADC8FF] p-5 rounded-lg shadow-md w-full">
+      <form onSubmit={handlePriorityFormSubmit} className="bg-[#9AC8FF] p-5 rounded-lg shadow-md w-full">
         <div className="mb-4">
           <label htmlFor="priority" className="block font-bold mb-2">우선 순위</label>
           <select
@@ -74,8 +74,7 @@ function IssueUploadPage() {
       </form>
       <button
         onClick={handlePriorityFormSubmit}
-        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-800 mx-auto w-full"
-      >
+        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-800 mx-auto w-1/5" >
         이슈 만들기
       </button>
     </div>

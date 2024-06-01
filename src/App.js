@@ -12,21 +12,65 @@ import Admin from "./pages/Admin";
 function App() {
   return (
     <div className="min-h-screen relative flex flex-col">
-      <Header />
-      <div className="flex flex-grow mt-16">
-        <Navbar />
-        <div className="flex-grow p-4 ml-60">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            # <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/issue-register" element={<IssueRegister />} /> 
-            <Route path="/stats" element={<Stats />} />
-            <Route path="/my-issues" element={<MyIssues />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <Home />
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/issue-register" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <IssueRegister />
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/stats" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <Stats />
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/my-issues" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <MyIssues />
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/admin" element={
+          <>
+            <Header />
+            <div className="flex flex-grow mt-16">
+              <Navbar />
+              <div className="flex-grow p-4 ml-60">
+                <Admin />
+              </div>
+            </div>
+          </>
+        } />
+      </Routes>
     </div>
   );
 }
