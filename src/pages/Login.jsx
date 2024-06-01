@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import logoImage from '../assets/images/logo.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -27,8 +29,10 @@ const Login = () => {
 
     return (
         <div className="flex justify-center items-center h-screen bg-blue-900">
-            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
-                <h2 className="text-2xl mb-4 text-center">로그인</h2>
+            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-2/5" onSubmit={handleSubmit}>
+                <Link to="/">
+                    <img src={logoImage} alt="logo" className="mx-auto" style={{ height: '100px' }} />
+                </Link>
                 <p className="text-gray-600 text-sm text-center mb-6">이메일과 비밀번호를 입력하세요.</p>
                 <div className="mb-4">
                     <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">이메일 주소:</label>
@@ -53,7 +57,7 @@ const Login = () => {
                     />
                 </div>
                 <div className="flex items-center justify-between">
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Sign In</button>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/5 py-2 px-4 rounded focus:outline-none focus:shadow-outline">로그인</button>
                     <label htmlFor="remember" className="text-sm text-gray-600">
                         <input 
                             type="checkbox" 

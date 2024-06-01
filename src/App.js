@@ -18,7 +18,7 @@ function App() {
         <div className="flex-grow p-4 ml-60">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
+            # <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/issue-register" element={<IssueRegister />} /> 
             <Route path="/stats" element={<Stats />} />
