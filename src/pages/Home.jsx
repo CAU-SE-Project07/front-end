@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const navigate = useNavigate(); 
@@ -16,7 +16,7 @@ const Home = () => {
     { issueNum: 4, title: 'Issue 4', reportedDate: '2024-05-04', assignee: 'Bob Lee', status: 'new' },
     { issueNum: 5, title: 'Issue 5', reportedDate: '2024-05-05', assignee: 'Chris Kim', status: 'new' },
     { issueNum: 6, title: 'Issue 6', reportedDate: '2024-05-06', assignee: 'David Park', status: 'fixed' },
-    { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'Eva Green', status: 'new' },
+    { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'John Doe', status: 'new' },
     { issueNum: 8, title: 'Issue 8', reportedDate: '2024-05-08', assignee: 'Frank White', status: 'resolved' },
     { issueNum: 9, title: 'Issue 9', reportedDate: '2024-05-09', assignee: 'Grace Brown', status: 'assigned' },
     { issueNum: 10, title: 'Issue 10', reportedDate: '2024-05-10', assignee: 'Hank Black', status: 'new' },
@@ -27,14 +27,30 @@ const Home = () => {
     navigate(`/issue/${issueNum}`);
   };
 
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setFilter((prevFilter) => 
+      prevFilter.includes(value)
+        ? prevFilter.filter((item) => item !== value)
+        : [...prevFilter, value]
+    );
+  };
+
+  // 필터링된 데이터 계산
+  const filteredData = dummyData.filter((issue) => {
+    const matchAssignee = searchTerm ? issue.assignee.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+    const matchStatus = filter.length ? filter.includes(issue.status) : true;
+    return matchAssignee && matchStatus;
+  });
+
   // 현재 페이지의 데이터 계산
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = dummyData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   // 페이지 번호를 렌더링하기 위한 로직
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(dummyData.length / itemsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredData.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
 
@@ -59,9 +75,9 @@ const Home = () => {
                 <input 
                   type="checkbox"
                   name="filter" 
-                  value="all" 
-                  checked={filter === 'all'}
-                  onChange={(e) => setFilter(e.target.value)}
+                  value="new" 
+                  checked={filter.includes('new')}
+                  onChange={handleCheckboxChange}
                   className="form-checkbox"
                 />
                 new
@@ -70,9 +86,9 @@ const Home = () => {
                 <input 
                   type="checkbox"
                   name="filter" 
-                  value="open" 
-                  checked={filter === 'open'}
-                  onChange={(e) => setFilter(e.target.value)}
+                  value="assigned" 
+                  checked={filter.includes('assigned')}
+                  onChange={handleCheckboxChange}
                   className="form-checkbox"
                 />
                 assigned
@@ -82,19 +98,19 @@ const Home = () => {
                   type="checkbox"
                   name="filter" 
                   value="closed" 
-                  checked={filter === 'closed'}
-                  onChange={(e) => setFilter(e.target.value)}
+                  checked={filter.includes('closed')}
+                  onChange={handleCheckboxChange}
                   className="form-checkbox"
                 />
-                fixed
+                closed
               </label>
               <label className="space-x-2">
                 <input 
                   type="checkbox"
                   name="filter" 
-                  value="inProgress" 
-                  checked={filter === 'inProgress'}
-                  onChange={(e) => setFilter(e.target.value)}
+                  value="resolved" 
+                  checked={filter.includes('resolved')}
+                  onChange={handleCheckboxChange}
                   className="form-checkbox"
                 />
                 resolved
@@ -103,12 +119,12 @@ const Home = () => {
                 <input 
                   type="checkbox"
                   name="filter" 
-                  value="assigned" 
-                  checked={filter === 'assigned'}
-                  onChange={(e) => setFilter(e.target.value)}
+                  value="fixed" 
+                  checked={filter.includes('fixed')}
+                  onChange={handleCheckboxChange}
                   className="form-checkbox"
                 />
-                closed
+                fixed
               </label>
             </div>
           </fieldset>
