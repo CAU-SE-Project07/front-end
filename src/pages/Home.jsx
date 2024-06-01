@@ -31,111 +31,120 @@ const Home = () => {
   }
 
   return (
-    <div className="">
-      <div className="flex justify-center p-4">
-        <input 
-          type="text" 
-          placeholder="이슈 검색" 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border rounded px-4 py-2 w-full max-w-xl"
-          style={{ height: '4rem' }}
-        />
-      </div>
-      <div className="flex justify-center p-2">
-        <fieldset className="border p-4 w-full max-w-xl bg-white">
-          <div className="flex justify-center space-x-6">
-            <label className="space-x-2">
-              <input 
-                type="checkbox"
-                name="filter" 
-                value="all" 
-                checked={filter === 'all'}
-                onChange={(e) => setFilter(e.target.value)}
-                className="form-checkbox"
-              />
-              new
-            </label>
-            <label className="space-x-2">
-              <input 
-                type="checkbox"
-                name="filter" 
-                value="open" 
-                checked={filter === 'open'}
-                onChange={(e) => setFilter(e.target.value)}
-                className="form-checkbox"
-              />
-              assigned
-            </label>
-            <label className="space-x-2">
-              <input 
-                type="checkbox"
-                name="filter" 
-                value="closed" 
-                checked={filter === 'closed'}
-                onChange={(e) => setFilter(e.target.value)}
-                className="form-checkbox"
-              />
-              fixed
-            </label>
-            <label className="space-x-2">
-              <input 
-                type="checkbox"
-                name="filter" 
-                value="inProgress" 
-                checked={filter === 'inProgress'}
-                onChange={(e) => setFilter(e.target.value)}
-                className="form-checkbox"
-              />
-              resolved
-            </label>
-            <label className="space-x-2">
-              <input 
-                type="checkbox"
-                name="filter" 
-                value="assigned" 
-                checked={filter === 'assigned'}
-                onChange={(e) => setFilter(e.target.value)}
-                className="form-checkbox"
-              />
-              closed
-            </label>
-          </div>
-        </fieldset>
+    <div className="min-h-screen bg-blue-900">
+      {/* 첫 번째 섹션: 입력 필드와 필터 체크박스 */}
+      <div className="mb-8">
+        <div className="flex justify-center p-6 bg-blue-900">
+          <input 
+            type="text" 
+            placeholder="이슈 검색" 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border rounded px-4 py-2 w-full max-w-xl bg-white"
+            style={{ height: '4rem' }}
+          />
+        </div>
+        <div className="flex justify-center p-4">
+          <fieldset className="border p-4 w-full max-w-xl bg-white">
+            <div className="flex justify-center space-x-6">
+              <label className="space-x-2">
+                <input 
+                  type="checkbox"
+                  name="filter" 
+                  value="all" 
+                  checked={filter === 'all'}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="form-checkbox"
+                />
+                new
+              </label>
+              <label className="space-x-2">
+                <input 
+                  type="checkbox"
+                  name="filter" 
+                  value="open" 
+                  checked={filter === 'open'}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="form-checkbox"
+                />
+                assigned
+              </label>
+              <label className="space-x-2">
+                <input 
+                  type="checkbox"
+                  name="filter" 
+                  value="closed" 
+                  checked={filter === 'closed'}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="form-checkbox"
+                />
+                fixed
+              </label>
+              <label className="space-x-2">
+                <input 
+                  type="checkbox"
+                  name="filter" 
+                  value="inProgress" 
+                  checked={filter === 'inProgress'}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="form-checkbox"
+                />
+                resolved
+              </label>
+              <label className="space-x-2">
+                <input 
+                  type="checkbox"
+                  name="filter" 
+                  value="assigned" 
+                  checked={filter === 'assigned'}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="form-checkbox"
+                />
+                closed
+              </label>
+            </div>
+          </fieldset>
+        </div>
       </div>
 
-      <h1 className="text-left text-2xl mb-4">ISSUE</h1>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 px-4 border-b"># Issue num</th>
-              <th className="py-2 px-4 border-b">Title</th>
-              <th className="py-2 px-4 border-b">Reported Date</th>
-              <th className="py-2 px-4 border-b">Assignee</th>
-              <th className="py-2 px-4 border-b">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((issue, index) => (
-              <tr key={index}>
-                <td className="py-2 px-4 border-b">{issue.issueNum}</td>
-                <td className="py-2 px-4 border-b">{issue.title}</td>
-                <td className="py-2 px-4 border-b">{issue.reportedDate}</td>
-                <td className="py-2 px-4 border-b">{issue.assignee}</td>
-                <td className="py-2 px-4 border-b">{issue.status}</td>
+      {/* 두 번째 섹션: ISSUE 글씨와 표 */}
+      <div className="bg-white rounded-t-2xl p-6">
+        <h1 className="text-2xl font-bold mb-4">ISSUE</h1>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="py-2 px-4 border-b"># Issue num</th>
+                <th className="py-2 px-4 border-b">Title</th>
+                <th className="py-2 px-4 border-b">Reported Date</th>
+                <th className="py-2 px-4 border-b">Assignee</th>
+                <th className="py-2 px-4 border-b">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center mt-4">
-        {pageNumbers.map(number => (
-          <button key={number} onClick={() => setCurrentPage(number)} className="mx-1 px-4 py-2 border rounded cursor-pointer">
-            {number}
-          </button>
-        ))}
+            </thead>
+            <tbody>
+              {currentItems.map((issue, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-b">{issue.issueNum}</td>
+                  <td className="py-2 px-4 border-b">{issue.title}</td>
+                  <td className="py-2 px-4 border-b">{issue.reportedDate}</td>
+                  <td className="py-2 px-4 border-b">{issue.assignee}</td>
+                  <td className="py-2 px-4 border-b">{issue.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-center my-4">
+          {pageNumbers.map(number => (
+            <button 
+              key={number} 
+              onClick={() => setCurrentPage(number)} 
+              className="mx-1 px-4 py-2 border rounded cursor-pointer bg-white"
+            >
+              {number}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

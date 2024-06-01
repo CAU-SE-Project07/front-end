@@ -3,14 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 export const Navbar = () => {
   const location = useLocation();
 
-  // 네비게이션 바 클릭 시 해당 페이지 파란색 버튼 생성
   const getNavLinkClass = (path) => {
     return location.pathname === path 
-      ? "text-white bg-blue-500 rounded-lg p-2" 
-      : "text-black hover:text-blue-500";
+      ? "text-white bg-blue-900 rounded-lg p-2" 
+      : "text-black hover:black";
   };
 
-  // 스타일 객체 생성
   const activeLinkStyle = {
     width: '160px',
     textAlign: 'center',

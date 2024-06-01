@@ -18,7 +18,7 @@ function App() {
             <Header />
             <div className="flex flex-grow mt-16">
               <Navbar />
-              <div className="flex-grow p-4 ml-60">
+              <div className="flex-grow ml-60">
                 <Home />
               </div>
             </div>

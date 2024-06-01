@@ -29,7 +29,7 @@ const Login = () => {
 
     return (
         <div className="flex justify-center items-center h-screen bg-blue-900">
-            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-2/5" onSubmit={handleSubmit}>
+            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-2/6" onSubmit={handleSubmit}>
                 <Link to="/">
                     <img src={logoImage} alt="logo" className="mx-auto" style={{ height: '100px' }} />
                 </Link>

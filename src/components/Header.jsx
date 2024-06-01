@@ -4,9 +4,8 @@ import logoImage from '../assets/images/logo.png';
 
 export const Header = () => {
   return (
-    <header className="w-full h-20 bg-gray-800 text-white flex items-center justify-between px-4 fixed top-0 left-0 z-10">
+    <header className="w-full h-20 bg-blue-900 text-white flex items-center justify-between px-4 fixed top-0 left-0 z-10">
       <div className="flex items-center">
-        {/* 로고 이미지를 클릭하여 홈 페이지로 이동하는 Link */}
         <Link to="/" className="cursor-pointer">
           <img src={logoImage} alt="logo" className="h-24 pl-6" />
         </Link>

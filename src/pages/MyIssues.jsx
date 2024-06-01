@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 
 const MyIssues = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // 페이지당 표시할 아이템 수, 필요에 따라 조정 가능
+  const itemsPerPage = 5;
 
   const issues = [
     { issueNum: '00002', title: '', reportedDate: '14 Feb 2019', assignee: 'Rosie Pearson', status: 'Assigned' },
     { issueNum: '00008', title: '', reportedDate: '14 Feb 2019', assignee: 'Rosie Pearson', status: 'Assigned' },
     { issueNum: '00013', title: '', reportedDate: '14 Feb 2019', assignee: 'Rosie Pearson', status: 'Assigned' },
-    // Add more issues as needed
   ];
 
   // 현재 페이지의 데이터 계산
