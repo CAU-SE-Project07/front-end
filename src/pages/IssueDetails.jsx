@@ -9,7 +9,7 @@ const dummyData = [
   { issueNum: 4, title: 'Issue 4', reportedDate: '2024-05-04', assignee: 'Bob Lee', status: 'new', reporter: 'Reporter 4', priority: 'trivial', description: 'Description of issue 4' },
   { issueNum: 5, title: 'Issue 5', reportedDate: '2024-05-05', assignee: 'Chris Kim', status: 'new', reporter: 'Reporter 5', priority: 'blocker', description: 'Description of issue 5' },
   { issueNum: 6, title: 'Issue 6', reportedDate: '2024-05-06', assignee: 'David Park', status: 'fixed', reporter: 'Reporter 6', priority: 'major', description: 'Description of issue 6' },
-  { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'Eva Green', status: 'new', reporter: 'Reporter 7', priority: 'minor', description: 'Description of issue 7' },
+  { issueNum: 7, title: 'Issue 7', reportedDate: '2024-05-07', assignee: 'John Doe', status: 'new', reporter: 'Reporter 7', priority: 'minor', description: 'Description of issue 7' },
   { issueNum: 8, title: 'Issue 8', reportedDate: '2024-05-08', assignee: 'Frank White', status: 'resolved', reporter: 'Reporter 8', priority: 'critical', description: 'Description of issue 8' },
   { issueNum: 9, title: 'Issue 9', reportedDate: '2024-05-09', assignee: 'Grace Brown', status: 'assigned', reporter: 'Reporter 9', priority: 'blocker', description: 'Description of issue 9' },
   { issueNum: 10, title: 'Issue 10', reportedDate: '2024-05-10', assignee: 'Hank Black', status: 'new', reporter: 'Reporter 10', priority: 'major', description: 'Description of issue 10' },

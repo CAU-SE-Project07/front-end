@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import IssueRegister from "./pages/IssueRegister";
-import Stats from "./pages/Stats";
 import MyIssues from "./pages/MyIssues";
 import Admin from "./pages/Admin";
 import IssueDetails from "./pages/IssueDetails";
@@ -34,17 +33,6 @@ function App() {
               <Navbar />
               <div className="flex-grow p-4 ml-60">
                 <IssueRegister />
-              </div>
-            </div>
-          </>
-        } />
-        <Route path="/stats" element={
-          <>
-            <Header />
-            <div className="flex flex-grow mt-16">
-              <Navbar />
-              <div className="flex-grow p-4 ml-60">
-                <Stats />
               </div>
             </div>
           </>

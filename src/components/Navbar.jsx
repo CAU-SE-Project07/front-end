@@ -20,7 +20,6 @@ export const Navbar = () => {
       <div className="flex flex-col gap-8 items-center">
         <Link to="/" className={getNavLinkClass("/")} style={location.pathname === "/" ? activeLinkStyle : {}}>Home</Link>
         <Link to="/issue-register" className={getNavLinkClass("/issue-register")} style={location.pathname === "/issue-register" ? activeLinkStyle : {}}>이슈 등록</Link>
-        <Link to="/stats" className={getNavLinkClass("/stats")} style={location.pathname === "/stats" ? activeLinkStyle : {}}>통계 분석</Link>
       </div>
       <hr className="my-4 w-full border-t border-gray-300" />
       <div className="flex flex-col gap-8 items-center">
