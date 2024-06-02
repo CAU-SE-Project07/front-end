@@ -11,4 +11,15 @@ const api = axios.create({
   }
 });
 
+export const fetchIssues = async () => {
+  try {
+    const response = await api.get('/issue/allIssues');
+    console.log('API Response:', response); // 응답 전체를 출력
+    return response.data;
+  } catch (error) {
+    alert('Error fetching issues:', error);
+    throw error;
+  }
+};
+
 export default api;

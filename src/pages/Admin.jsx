@@ -17,24 +17,25 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       const response = await api.get('/member/allUsers');
-      const fetchedUsers = response.data.list.map(user => ({
-        memberId: user.memberId,
-        userID: user.userId,
-        name: user.userNm,
-        role: user.userRoles,
-        email: user.email || ''
-      }));
-      console.log('Fetched users:', fetchedUsers);
-      setUsers(fetchedUsers);
-      localStorage.setItem('users', JSON.stringify(fetchedUsers));
+      if (response.data && response.data.list) {
+        const fetchedUsers = response.data.list.map(user => ({
+          userID: user.userId,
+          name: user.userNm,
+          role: user.userRoles,
+          email: user.email || ''
+        }));
+        console.log('Fetched users:', fetchedUsers);
+        setUsers(fetchedUsers);
+      } else {
+        console.error('No users found in response:', response.data);
+      }
     } catch (error) {
-      alert('Error fetching users:', error);
+      console.error('Error fetching users:', error.response ? error.response.data : error.message);
+      alert('Error fetching users:', error.response ? error.response.data : error.message);
     }
   };
 
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    setUsers(storedUsers);
     fetchUsers();
   }, []);
 
@@ -67,8 +68,7 @@ const Admin = () => {
       const existingUser = users.find(user => user.userID === userID);
       if (existingUser) {
         alert('해당 userID가 이미 등록되어 있습니다. 정보만 수정됩니다.');
-        const response = await api.put('/member/updateMember', {
-          memberId: existingUser.memberId,
+        await api.put('/member/updateMember', {
           userId: userID,
           userNm: name,
           userPwd: password,
@@ -84,15 +84,8 @@ const Admin = () => {
           role,
           email
         } : user)));
-        localStorage.setItem('users', JSON.stringify(users.map(user => (user.userID === userID ? {
-          ...user,
-          name,
-          role,
-          email
-        } : user))));
       } else {
         const response = await api.post('/member/addMember', {
-          memberId: 0,
           userId: userID,
           userNm: name,
           userPwd: password,
@@ -104,22 +97,15 @@ const Admin = () => {
         });
         alert('User가 추가되었습니다');
         setUsers([...users, {
-          memberId: response.data.memberId,
           userID,
           name,
           role,
           email
         }]);
-        localStorage.setItem('users', JSON.stringify([...users, {
-          memberId: response.data.memberId,
-          userID,
-          name,
-          role,
-          email
-        }]));
       }
 
       setUserInfo({ userID: '', password: '', email: '', name: '', role: 'Developer' });
+      fetchUsers();  // Refresh the user list after adding/updating user
     } catch (error) {
       console.error('Error adding/updating user:', error.response ? error.response.data : error.message);
       alert('사용자 추가/수정에 실패했습니다.');
@@ -142,7 +128,7 @@ const Admin = () => {
         )
       );
       alert('선택된 사용자가 삭제되었습니다.');
-      fetchUsers();
+      fetchUsers();  // Refresh the user list after removing selected users
     } catch (error) {
       console.error('Error removing users:', error);
       alert('사용자 삭제에 실패했습니다.');
@@ -159,7 +145,6 @@ const Admin = () => {
       });
       console.log('Project saved:', response.data);
       alert('프로젝트 제목과 상세내용이 저장되었습니다.');
-      // 저장 후에도 로컬 스토리지에 값을 유지
       localStorage.setItem('projectName', projectName);
       localStorage.setItem('projectDescription', projectDescription);
     } catch (error) {
