@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // API 기본 URL 설정
-export const API_BASE_URL = 'https://83b6-219-255-207-40.ngrok-free.app';
+export const API_BASE_URL = '';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,15 +11,5 @@ const api = axios.create({
   }
 });
 
-export const fetchIssues = async () => {
-  try {
-    const response = await api.get('/issue/allIssues');
-    console.log('API Response:', response); // 응답 전체를 출력
-    return response.data;
-  } catch (error) {
-    alert('Error fetching issues:', error);
-    throw error;
-  }
-};
 
 export default api;

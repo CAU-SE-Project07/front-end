@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchIssues } from '../api';
+import api from '../api'; // 경로가 정확한지 확인하세요
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [issues, setIssues] = useState([]); // 빈 배열로 초기화
+  const [issues, setIssues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const itemsPerPage = 8;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadIssues = async () => {
+    const fetchIssues = async () => {
       try {
-        const issuesData = await fetchIssues();
-        console.log('Fetched Issues:', issuesData); // 데이터를 확인하기 위해 콘솔에 출력
-        setIssues(Array.isArray(issuesData) ? issuesData : []); // 데이터를 배열로 설정
+        const response = await api.get('/issue/allIssues');
+        setIssues(Array.isArray(response.data) ? response.data : []);
+        setLoading(false);
       } catch (error) {
-        console.error('Failed to fetch issues:', error);
-        setIssues([]); // 오류가 발생할 경우 빈 배열로 설정
+        setError(error);
+        setLoading(false);
       }
     };
 
-    loadIssues();
+    fetchIssues();
   }, []);
 
   const handleClickIssue = (issueId) => {
@@ -38,8 +40,11 @@ const Home = () => {
     );
   };
 
-  // 필터링을 잠시 제거하여 모든 데이터를 출력해봅니다.
-  const filteredData = issues;
+  const filteredData = issues.filter((issue) => {
+    const matchAssignee = searchTerm ? issue.assignee.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+    const matchStatus = filter.length ? filter.includes(issue.state) : true;
+    return matchAssignee && matchStatus;
+  });
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -48,6 +53,14 @@ const Home = () => {
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredData.length / itemsPerPage); i++) {
     pageNumbers.push(i);
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   return (
@@ -63,23 +76,65 @@ const Home = () => {
             style={{ height: '4.5rem' }}
           />
         </div>
-
+        
         <div className="flex justify-center p-6">
           <fieldset className="border rounded-lg p-4 w-full max-w-xl bg-white">
             <div className="flex justify-center space-x-6">
-              {['new', 'assigned', 'closed', 'resolved', 'fixed'].map((status) => (
-                <label key={status} className="space-x-2">
-                  <input
-                    type="checkbox"
-                    name="filter"
-                    value={status}
-                    checked={filter.includes(status)}
-                    onChange={handleCheckboxChange}
-                    className="form-checkbox"
-                  />
-                  {status}
-                </label>
-              ))}
+              <label className="space-x-2">
+                <input
+                  type="checkbox"
+                  name="filter"
+                  value="new"
+                  checked={filter.includes('new')}
+                  onChange={handleCheckboxChange}
+                  className="form-checkbox"
+                />
+                new
+              </label>
+              <label className="space-x-2">
+                <input
+                  type="checkbox"
+                  name="filter"
+                  value="assigned"
+                  checked={filter.includes('assigned')}
+                  onChange={handleCheckboxChange}
+                  className="form-checkbox"
+                />
+                assigned
+              </label>
+              <label className="space-x-2">
+                <input
+                  type="checkbox"
+                  name="filter"
+                  value="closed"
+                  checked={filter.includes('closed')}
+                  onChange={handleCheckboxChange}
+                  className="form-checkbox"
+                />
+                closed
+              </label>
+              <label className="space-x-2">
+                <input
+                  type="checkbox"
+                  name="filter"
+                  value="resolved"
+                  checked={filter.includes('resolved')}
+                  onChange={handleCheckboxChange}
+                  className="form-checkbox"
+                />
+                resolved
+              </label>
+              <label className="space-x-2">
+                <input
+                  type="checkbox"
+                  name="filter"
+                  value="fixed"
+                  checked={filter.includes('fixed')}
+                  onChange={handleCheckboxChange}
+                  className="form-checkbox"
+                />
+                fixed
+              </label>
             </div>
           </fieldset>
         </div>
@@ -94,26 +149,20 @@ const Home = () => {
                 <th className="py-2 px-4 border-b"># Issue num</th>
                 <th className="py-2 px-4 border-b">Title</th>
                 <th className="py-2 px-4 border-b">Reported Date</th>
-                <th className="py-2 px-4 border-b">Assignee</th>
+                <th className="py-2 px-4 border-b">Reporter</th>
                 <th className="py-2 px-4 border-b">Status</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.length > 0 ? (
-                currentItems.map((issue) => (
-                  <tr key={issue.issueId} onClick={() => handleClickIssue(issue.issueId)} style={{ cursor: 'pointer' }}>
-                    <td className="py-2 px-4 border-b">{issue.issueId}</td>
-                    <td className="py-2 px-4 border-b">{issue.title}</td>
-                    <td className="py-2 px-4 border-b">{issue.date ? new Date(issue.date).toLocaleDateString() : 'N/A'}</td>
-                    <td className="py-2 px-4 border-b">{issue.assignee || 'N/A'}</td>
-                    <td className="py-2 px-4 border-b">{issue.state}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="py-2 px-4 border-b text-center">No issues found</td>
+              {currentItems.map((issue) => (
+                <tr key={issue.issueId} onClick={() => handleClickIssue(issue.issueId)} style={{ cursor: 'pointer' }}>
+                  <td className="py-2 px-4 border-b">{issue.issueId}</td>
+                  <td className="py-2 px-4 border-b">{issue.title}</td>
+                  <td className="py-2 px-4 border-b">{issue.date}</td>
+                  <td className="py-2 px-4 border-b">{issue.reporter}</td>
+                  <td className="py-2 px-4 border-b">{issue.state}</td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         </div>

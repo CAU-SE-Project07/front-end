@@ -22,7 +22,7 @@ const Admin = () => {
           userID: user.userId,
           name: user.userNm,
           role: user.userRoles,
-          email: user.email || ''
+          email: user.email || '' // Null 값을 빈 문자열로 대체
         }));
         console.log('Fetched users:', fetchedUsers);
         setUsers(fetchedUsers);
