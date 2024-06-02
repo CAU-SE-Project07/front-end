@@ -22,7 +22,7 @@ const Admin = () => {
           userID: user.userId,
           name: user.userNm,
           role: user.userRoles,
-          email: user.email || '' // Null 값을 빈 문자열로 대체
+          email: user.email || 'N/A' // Null 값을 빈 문자열로 대체
         }));
         console.log('Fetched users:', fetchedUsers);
         setUsers(fetchedUsers);
@@ -122,11 +122,18 @@ const Admin = () => {
 
   const handleRemoveSelectedUsers = async () => {
     try {
-      await Promise.all(
-        selectedUsers.map(userID =>
-          api.delete(`/member/deleteMember/${userID}`)
-        )
-      );
+      const usersToDelete = users.filter(user => selectedUsers.includes(user.userID)).map(user => ({
+        userId: user.userID,
+        userNm: user.name,
+        userPwd: '',
+        userChkPwd: '',
+        userRoles: user.role,
+        nickNm: '',
+        email: user.email,
+        projectNm: projectName
+      }));
+      
+      await api.delete('/member/deleteUsers', { data: usersToDelete });
       alert('선택된 사용자가 삭제되었습니다.');
       fetchUsers();  // Refresh the user list after removing selected users
     } catch (error) {

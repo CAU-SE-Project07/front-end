@@ -13,19 +13,24 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchIssues = async () => {
-      try {
-        const response = await api.get('/issue/allIssues');
-        setIssues(Array.isArray(response.data) ? response.data : []);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
     fetchIssues();
   }, []);
+
+  const fetchIssues = async (stateFilter = []) => {
+    setLoading(true);
+    try {
+      const response = await api.get('/issue/allIssues');
+      const allIssues = Array.isArray(response.data) ? response.data : [];
+      const filteredIssues = stateFilter.length
+        ? allIssues.filter(issue => stateFilter.includes(issue.state.toLowerCase()))
+        : allIssues;
+      setIssues(filteredIssues);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
 
   const handleClickIssue = (issueId) => {
     navigate(`/issue/${issueId}`);
@@ -40,10 +45,13 @@ const Home = () => {
     );
   };
 
+  const handleSearch = () => {
+    fetchIssues(filter);
+  };
+
   const filteredData = issues.filter((issue) => {
     const matchAssignee = searchTerm ? issue.assignee.toLowerCase().includes(searchTerm.toLowerCase()) : true;
-    const matchStatus = filter.length ? filter.includes(issue.state) : true;
-    return matchAssignee && matchStatus;
+    return matchAssignee;
   });
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -137,6 +145,15 @@ const Home = () => {
               </label>
             </div>
           </fieldset>
+        </div>
+        
+        <div className="flex justify-center p-6">
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Search
+          </button>
         </div>
       </div>
 
