@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+
+// API_BASE_URL 설정
+const API_BASE_URL = 'https://e92b-14-36-206-222.ngrok-free.app';
+
+// Axios 기본 설정
+axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const Admin = () => {
   const [projectName, setProjectName] = useState('');
@@ -11,6 +19,15 @@ const Admin = () => {
     email: '',
     role: 'Developer'
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      console.warn('No token found in localStorage');
+    }
+  }, []);
 
   const handleProjectNameChange = (e) => {
     setProjectName(e.target.value);
@@ -46,6 +63,23 @@ const Admin = () => {
     setSelectedUsers([]);
   };
 
+  const handleSaveProject = async () => {
+    try {
+      const response = await axios.post('/project/addProject', {
+        projectNm: projectName,
+        projectDesc: projectDescription
+      });
+      alert('프로젝트 제목과 상세내용이 저장되었습니다.');
+      console.log('Project saved:', response.data);
+      // Optionally reset project details
+      setProjectName('');
+      setProjectDescription('');
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert(`실패: ${error.response ? error.response.data.message : error.message}`);
+    }
+  };
+
   return (
     <div className="p-5">
       <div className="max-w-2xl mx-auto">
@@ -73,6 +107,9 @@ const Admin = () => {
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
         </div>
+        <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-red-600 mb-5" onClick={handleSaveProject}>
+          Save
+        </button>
       </div>
 
       <div className="max-w-2xl mx-auto">
@@ -154,7 +191,7 @@ const Admin = () => {
               </label>
             </div>
           </div>
-          <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onClick={handleAddUser}>ADD</button>
+          <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-green-600" onClick={handleAddUser}>ADD</button>
         </div>
         <table className="w-full border-collapse mb-5">
           <thead>
@@ -182,7 +219,7 @@ const Admin = () => {
             ))}
           </tbody>
         </table>
-        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={handleRemoveSelectedUsers}>
+        <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onClick={handleRemoveSelectedUsers}>
           Remove selected accounts
         </button>
       </div>

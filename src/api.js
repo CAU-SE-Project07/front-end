@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://your-api-base-url.com';
+const API_BASE_URL = 'https://e92b-14-36-206-222.ngrok-free.app/';
 
 axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';

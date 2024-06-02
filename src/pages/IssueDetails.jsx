@@ -29,7 +29,7 @@ const IssueDetails = () => {
 
       <div className="bg-[#DDF1FF] p-5 rounded-lg shadow-md">
         <h2 className="text-l font-semibold"># 이슈 번호: {issue.issueNum}</h2>
-        <h1 className="text-xl font-medium">이슈 제목: {issue.title}</h1>
+        <h1 className="text-xl font-medium">{issue.title}</h1>
         <div className="h-[1px] bg-gray-800 my-4"></div>
         <div className="grid grid-cols-3 gap-2 mb-4">
           <div>Reporter: {issue.reporter}</div>
@@ -51,7 +51,7 @@ const IssueDetails = () => {
       <div className="bg-[#DDF1FF] p-5 rounded-lg shadow-md">
         <div className="mb-5">
           <div>
-            <input type="text" placeholder="이슈 제목" className="w-full p-2 mb-2 border rounded" />
+            <h1 className="text-xl font-medium mb-2">{issue.title}</h1>
             <div className="mt-4">
               <textarea placeholder="수정할 내용을 적어주세요" className="w-full p-2 h-36 border rounded"></textarea>
             </div>
