@@ -26,12 +26,15 @@ const Admin = () => {
       }));
       console.log('Fetched users:', fetchedUsers);
       setUsers(fetchedUsers);
+      localStorage.setItem('users', JSON.stringify(fetchedUsers));
     } catch (error) {
-      console.error('Error fetching users:', error.response ? error.response.data : error.message);
+      alert('Error fetching users:', error);
     }
   };
 
   useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    setUsers(storedUsers);
     fetchUsers();
   }, []);
 
@@ -75,7 +78,18 @@ const Admin = () => {
           email: email,
           projectNm: projectName
         });
-        setUsers(users.map(user => (user.userID === userID ? response.data : user)));
+        setUsers(users.map(user => (user.userID === userID ? {
+          ...user,
+          name,
+          role,
+          email
+        } : user)));
+        localStorage.setItem('users', JSON.stringify(users.map(user => (user.userID === userID ? {
+          ...user,
+          name,
+          role,
+          email
+        } : user))));
       } else {
         const response = await api.post('/member/addMember', {
           memberId: 0,
@@ -89,11 +103,23 @@ const Admin = () => {
           projectNm: projectName
         });
         alert('User가 추가되었습니다');
-        setUsers([...users, response.data]);
+        setUsers([...users, {
+          memberId: response.data.memberId,
+          userID,
+          name,
+          role,
+          email
+        }]);
+        localStorage.setItem('users', JSON.stringify([...users, {
+          memberId: response.data.memberId,
+          userID,
+          name,
+          role,
+          email
+        }]));
       }
 
       setUserInfo({ userID: '', password: '', email: '', name: '', role: 'Developer' });
-      fetchUsers();  // Refresh the user list after adding/updating user
     } catch (error) {
       console.error('Error adding/updating user:', error.response ? error.response.data : error.message);
       alert('사용자 추가/수정에 실패했습니다.');
@@ -116,7 +142,7 @@ const Admin = () => {
         )
       );
       alert('선택된 사용자가 삭제되었습니다.');
-      fetchUsers();  // Refresh the user list after removing selected users
+      fetchUsers();
     } catch (error) {
       console.error('Error removing users:', error);
       alert('사용자 삭제에 실패했습니다.');
@@ -133,6 +159,7 @@ const Admin = () => {
       });
       console.log('Project saved:', response.data);
       alert('프로젝트 제목과 상세내용이 저장되었습니다.');
+      // 저장 후에도 로컬 스토리지에 값을 유지
       localStorage.setItem('projectName', projectName);
       localStorage.setItem('projectDescription', projectDescription);
     } catch (error) {
