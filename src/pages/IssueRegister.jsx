@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './IssueRegister.css';
 
 function IssueUploadPage() {
   const [title, setTitle] = useState('');
@@ -18,46 +17,61 @@ function IssueUploadPage() {
     setPriority(e.target.value);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // 여기에 폼 제출 로직을 추가합니다.
-    console.log({ title, description, priority });
-  };
-
-  const handlePriorityFormSubmit = (e) => {
-    e.preventDefault();
-    // 우선 순위 폼 제출 로직을 추가합니다.
-    console.log({ priority });
+    try {
+      const response = await fetch('http://localhost:8080/api/issues', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, description, priority }),
+      });
+      if (response.ok) {
+        // 이슈가 성공적으로 생성된 경우
+        console.log('이슈가 성공적으로 생성되었습니다.');
+      } else {
+        // 오류가 발생한 경우
+        console.error('이슈 생성에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('API 호출 중 오류가 발생했습니다:', error);
+    }
   };
 
   return (
-    <div className="IssueUploadPage">
-      <h1>이슈 등록</h1>
-      <form onSubmit={handleFormSubmit} className="main-form">
-        <div className="form-group">
-          <label htmlFor="title">제목</label>
+    <div className="grid gap-5 p-5 bg-white w-4/5 mx-auto">
+      <h1 className="text-2xl font-bold mb-2">이슈 등록</h1>
+      <form onSubmit={handleFormSubmit} className="bg-[#DDF1FF] p-5 rounded-lg shadow-md w-full">
+        <div className="mb-4">
+          <label htmlFor="title" className="block font-bold mb-2">제목</label>
           <input
             type="text"
             id="title"
             value={title}
-            placeholder="제목을 입력하세요..."
+            placeholder="제목을 입력하세요"
             onChange={handleTitleChange}
+            className="w-full p-2 border rounded"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="description">상세 설명</label>
+        <div className="mb-4">
+          <label htmlFor="description" className="block font-bold mb-2">상세 설명</label>
           <textarea
             id="description"
             value={description}
-            placeholder="상세 설명을 입력하세요..."
+            placeholder="상세 설명을 입력하세요"
             onChange={handleDescriptionChange}
+            className="w-full p-2 border rounded h-48"
           />
         </div>
-      </form>
-      <form onSubmit={handlePriorityFormSubmit} className="priority-form">
-        <div className="form-group">
-          <label htmlFor="priority">우선 순위</label>
-          <select id="priority" className="priority-select" value={priority} onChange={handlePriorityChange}>
+        <div className="mb-4">
+          <label htmlFor="priority" className="block font-bold mb-2">우선 순위</label>
+          <select
+            id="priority"
+            className="p-2 border rounded"
+            value={priority}
+            onChange={handlePriorityChange}
+          >
             <option value="blocker">blocker</option>
             <option value="critical">critical</option>
             <option value="major">major</option>
@@ -65,8 +79,12 @@ function IssueUploadPage() {
             <option value="trivial">trivial</option>
           </select>
         </div>
+        <button
+          type="submit"
+          className="bg-blue-900 text-white py-2 px-4 rounded mx-auto w-1.7/5" >
+          이슈 만들기
+        </button>
       </form>
-      <button onClick={handlePriorityFormSubmit} className="submit-button">이슈만들기</button>
     </div>
   );
 }
