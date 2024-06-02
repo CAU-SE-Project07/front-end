@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import api from '../api'; // api.js 파일을 임포트합니다.
 
 function IssueUploadPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('major');
+  const [userId, setUserId] = useState('');
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -17,25 +19,43 @@ function IssueUploadPage() {
     setPriority(e.target.value);
   };
 
+  const handleUserIdChange = (e) => {
+    setUserId(e.target.value);
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    const date = new Date();
+    const seoulTime = new Intl.DateTimeFormat('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Seoul',
+    }).format(date);
     try {
-      const response = await fetch('http://localhost:8080/api/issues', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title, description, priority }),
+      const response = await api.post('/issue/addIssue', {
+        title,
+        description,
+        priority,
+        userId,
+        date: seoulTime
       });
-      if (response.ok) {
+
+      if (response.status >= 200 && response.status < 300) {
         // 이슈가 성공적으로 생성된 경우
-        console.log('이슈가 성공적으로 생성되었습니다.');
+        alert('이슈가 성공적으로 생성되었습니다.');
       } else {
         // 오류가 발생한 경우
-        console.error('이슈 생성에 실패했습니다.');
+        alert('이슈 생성에 실패했습니다.');
+        console.error('응답 상태 코드:', response.status);
+        console.error('응답 데이터:', response.data);
       }
     } catch (error) {
       console.error('API 호출 중 오류가 발생했습니다:', error);
+      alert('API 호출 중 오류가 발생했습니다:', error.message);
     }
   };
 
@@ -78,6 +98,17 @@ function IssueUploadPage() {
             <option value="minor">minor</option>
             <option value="trivial">trivial</option>
           </select>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="userId" className="block font-bold mb-2">사용자 ID</label>
+          <input
+            type="text"
+            id="userId"
+            value={userId}
+            placeholder="사용자 ID를 입력하세요"
+            onChange={handleUserIdChange}
+            className="w-full p-2 border rounded"
+          />
         </div>
         <button
           type="submit"

@@ -1,24 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../api';
 
 const Admin = () => {
-  const [projectName, setProjectName] = useState('');
-  const [projectDescription, setProjectDescription] = useState('');
+  const [projectName, setProjectName] = useState(localStorage.getItem('projectName') || '');
+  const [projectDescription, setProjectDescription] = useState(localStorage.getItem('projectDescription') || '');
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [userInfo, setUserInfo] = useState({
-    username: '',
+    userID: '',
     password: '',
     email: '',
+    name: '',
     role: 'Developer'
   });
 
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get('/member/allUsers');
+      const fetchedUsers = response.data.list.map(user => ({
+        memberId: user.memberId,
+        userID: user.userId,
+        name: user.userNm,
+        role: user.userRoles,
+        email: user.email || ''
+      }));
+      console.log('Fetched users:', fetchedUsers);
+      setUsers(fetchedUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const handleProjectNameChange = (e) => {
     setProjectName(e.target.value);
+    localStorage.setItem('projectName', e.target.value);
   };
 
   const handleProjectDescriptionChange = (e) => {
     setProjectDescription(e.target.value);
+    localStorage.setItem('projectDescription', e.target.value);
   };
 
   const handleChange = (e) => {
@@ -29,22 +53,76 @@ const Admin = () => {
     });
   };
 
-  const handleAddUser = () => {
-    setUsers([...users, userInfo]);
-    setUserInfo({ username: '', password: '', email: '', role: 'Developer' });
+  const handleAddUser = async () => {
+    const { userID, password, email, name, role } = userInfo;
+    if (!userID || !password || !email || !name || !role) {
+      alert('정보를 모두 입력해주세요');
+      return;
+    }
+
+    try {
+      const existingUser = users.find(user => user.userID === userID);
+      if (existingUser) {
+        alert('해당 userID가 이미 등록되어 있습니다. 정보만 수정됩니다.');
+        const response = await api.put('/member/updateMember', {
+          memberId: existingUser.memberId,
+          userId: userID,
+          userNm: name,
+          userPwd: password,
+          userChkPwd: password,
+          userRoles: role,
+          nickNm: name,
+          email: email,
+          projectNm: projectName
+        });
+        setUsers(users.map(user => (user.userID === userID ? response.data : user)));
+      } else {
+        const response = await api.post('/member/addMember', {
+          memberId: 0,
+          userId: userID,
+          userNm: name,
+          userPwd: password,
+          userChkPwd: password,
+          userRoles: role,
+          nickNm: name,
+          email: email,
+          projectNm: projectName
+        });
+        alert('User가 추가되었습니다');
+        setUsers([...users, response.data]);
+      }
+
+      setUserInfo({ userID: '', password: '', email: '', name: '', role: 'Developer' });
+      fetchUsers();  // Refresh the user list after adding/updating user
+    } catch (error) {
+      console.error('Error adding/updating user:', error.response ? error.response.data : error.message);
+      alert('사용자 추가/수정에 실패했습니다.');
+    }
   };
 
-  const handleSelectUser = (username) => {
+  const handleSelectUser = (userID) => {
     setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.includes(username)
-        ? prevSelectedUsers.filter((user) => user !== username)
-        : [...prevSelectedUsers, username]
+      prevSelectedUsers.includes(userID)
+        ? prevSelectedUsers.filter((user) => user !== userID)
+        : [...prevSelectedUsers, userID]
     );
   };
 
-  const handleRemoveSelectedUsers = () => {
-    setUsers(users.filter((user) => !selectedUsers.includes(user.username)));
-    setSelectedUsers([]);
+  const handleRemoveSelectedUsers = async () => {
+    try {
+      await Promise.all(
+        selectedUsers.map(userID =>
+          api.delete(`/member/deleteMember/${userID}`)
+        )
+      );
+      alert('선택된 사용자가 삭제되었습니다.');
+      fetchUsers();  // Refresh the user list after removing selected users
+    } catch (error) {
+      console.error('Error removing users:', error);
+      alert('사용자 삭제에 실패했습니다.');
+    } finally {
+      setSelectedUsers([]);
+    }
   };
 
   const handleSaveProject = async () => {
@@ -55,26 +133,11 @@ const Admin = () => {
       });
       console.log('Project saved:', response.data);
       alert('프로젝트 제목과 상세내용이 저장되었습니다.');
-      // 프로젝트 세부 정보를 초기화하려면 아래 주석을 해제하세요.
-      setProjectName('');
-      setProjectDescription('');
+      localStorage.setItem('projectName', projectName);
+      localStorage.setItem('projectDescription', projectDescription);
     } catch (error) {
-      console.error('Error saving project:', error);
-      if (error.response) {
-        // 서버가 응답했지만 상태 코드가 2xx 범위 밖인 경우
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-        alert(`프로젝트 저장에 실패했습니다. 오류 코드: ${error.response.status}`);
-      } else if (error.request) {
-        // 요청이 만들어졌지만 응답을 받지 못한 경우
-        console.error('Request data:', error.request);
-        alert('프로젝트 저장에 실패했습니다. 서버로부터 응답을 받지 못했습니다.');
-      } else {
-        // 요청을 설정하는 중에 오류가 발생한 경우
-        console.error('Error message:', error.message);
-        alert(`프로젝트 저장에 실패했습니다. 오류 메시지: ${error.message}`);
-      }
+      console.error('Error saving project:', error.response ? error.response.data : error.message);
+      alert('프로젝트 저장에 실패했습니다.');
     }
   };
 
@@ -110,20 +173,19 @@ const Admin = () => {
         </button>
       </div>
 
-
       <div className="max-w-2xl mx-auto">
         <h2 className="text-xl font-bold mb-5">Manage User Accounts</h2>
       </div>
       <div className="bg-[#DDF1FF] rounded-lg p-5 max-w-2xl mx-auto">
         <div className="mb-5">
           <div className="flex items-center mb-4">
-            <label htmlFor="username" className="w-24 mr-2">User ID:</label>
+            <label htmlFor="userID" className="w-24 mr-2">User ID:</label>
             <input
               type="text"
-              id="username"
-              name="username"
+              id="userID"
+              name="userID"
               placeholder="User ID"
-              value={userInfo.username}
+              value={userInfo.userID}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -148,6 +210,18 @@ const Admin = () => {
               name="email"
               placeholder="e-mail"
               value={userInfo.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="flex items-center mb-4">
+            <label htmlFor="name" className="w-24 mr-2">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={userInfo.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -198,6 +272,7 @@ const Admin = () => {
               <th className="border px-4 py-2">Select</th>
               <th className="border px-4 py-2">Role</th>
               <th className="border px-4 py-2">User ID</th>
+              <th className="border px-4 py-2">Name</th>
               <th className="border px-4 py-2">E-mail</th>
             </tr>
           </thead>
@@ -207,12 +282,13 @@ const Admin = () => {
                 <td className="border px-4 py-2 text-center">
                   <input
                     type="checkbox"
-                    checked={selectedUsers.includes(user.username)}
-                    onChange={() => handleSelectUser(user.username)}
+                    checked={selectedUsers.includes(user.userID)}
+                    onChange={() => handleSelectUser(user.userID)}
                   />
                 </td>
                 <td className="border px-4 py-2 text-center">{user.role}</td>
-                <td className="border px-4 py-2 text-center">{user.username}</td>
+                <td className="border px-4 py-2 text-center">{user.userID}</td>
+                <td className="border px-4 py-2 text-center">{user.name}</td>
                 <td className="border px-4 py-2 text-center">{user.email}</td>
               </tr>
             ))}
