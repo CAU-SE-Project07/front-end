@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logoImage from '../assets/images/logo_login.png';
+import axios from 'axios';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [rememberPassword, setRememberPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    
+    const navigate = useNavigate();
 
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
+    const handleUserIdChange = (e) => {
+        setUserId(e.target.value);
     };
 
     const handlePasswordChange = (e) => {
@@ -21,27 +26,25 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
+        setLoading(true);
+
         try {
-            const response = await fetch('/member/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // 로그인 성공 처리
-                console.log('로그인 성공:', data);
-            } else {
-                // 로그인 실패 처리
-                console.error('로그인 실패:', data.error);
-            }
+            const response = await axios.post('/member/login', { userId, userPwd: password });
+            const data = response.data;
+
+            console.log('로그인 성공:', data);
+            alert('로그인에 성공했습니다!');
+
+            localStorage.setItem('user', JSON.stringify({ userId }));
+            setLoading(false);
+
+            navigate('/');
         } catch (error) {
-            console.error('로그인 요청 실패:', error);
+            console.error('로그인 실패:', error.response.data.msg);
+            setError(error.response.data.msg);
+            setLoading(false);
+            alert('로그인에 실패했습니다: ' + error.response.data.msg);
         }
     };
 
@@ -51,14 +54,14 @@ const Login = () => {
                 <Link to="/">
                     <img src={logoImage} alt="logo" className="mx-auto" style={{ height: '100px' }} />
                 </Link>
-                <p className="text-gray-600 text-sm text-center mb-6">이메일과 비밀번호를 입력하세요.</p>
+                <p className="text-gray-600 text-sm text-center mb-6">아이디와 비밀번호를 입력하세요.</p>
                 <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">이메일 주소:</label>
+                    <label htmlFor="userId" className="block text-gray-700 text-sm font-bold mb-2">아이디:</label>
                     <input 
-                        type="email" 
-                        id="email" 
-                        value={email} 
-                        onChange={handleEmailChange} 
+                        type="text" 
+                        id="userId" 
+                        value={userId} 
+                        onChange={handleUserIdChange} 
                         required 
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
@@ -75,7 +78,9 @@ const Login = () => {
                     />
                 </div>
                 <div className="flex items-center justify-between">
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/5 py-2 px-4 rounded focus:outline-none focus:shadow-outline">로그인</button>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/5 py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        {loading ? '로딩 중...' : '로그인'}
+                    </button>
                     <label htmlFor="remember" className="text-sm text-gray-600">
                         <input 
                             type="checkbox" 
@@ -87,6 +92,7 @@ const Login = () => {
                         아이디 저장
                     </label>
                 </div>
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             </form>
         </div>
     );

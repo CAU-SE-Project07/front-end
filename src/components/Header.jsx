@@ -1,17 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import logoImage from '../assets/images/logo.png'; 
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import logoImage from '../assets/images/logo.png';
 
 export const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState('');
-  
+  const [userInfo, setUserInfo] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
+    if (user && user.userId) {
       setIsLoggedIn(true);
-      setUserId(user.id);
+      setUserId(user.userId);
+      fetchUserInfo(user.userId);
     }
+  }, []);
+
+  const fetchUserInfo = async (userId) => {
+    try {
+      const response = await axios.get(`/member/${userId}`);
+      console.log('API 응답 데이터:', response.data); // API 응답 데이터 확인
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error('유저 정보 불러오기 실패:', error);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    setUserId('');
+    setUserInfo(null);
+    navigate('/');
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
@@ -23,7 +64,25 @@ export const Header = () => {
       </div>
       <div className="flex items-center space-x-4">
         {isLoggedIn ? (
-          <span>{userId}</span>
+          <>
+            <div className="relative" ref={dropdownRef}>
+              <span
+                style={{ color: 'white', cursor: 'pointer' }}
+                onClick={toggleDropdown}
+              >
+                {userId}
+              </span>
+              {showDropdown && userInfo && (
+                <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg py-2">
+                  <div className="px-4 py-2 text-black">{userInfo.userId}</div>
+                  <div className="px-4 py-2 text-black">{userInfo.email}</div>
+                  <div className="border-t border-gray-300"></div>
+                  <div className="px-4 py-2 text-black">{userInfo.userRoles}</div>
+                </div>
+              )}
+            </div>
+            <button onClick={handleLogout} className="text-white hover:text-gray-300">로그아웃</button>
+          </>
         ) : (
           <>
             <Link to="/login" className="text-white hover:text-gray-300">로그인</Link>
