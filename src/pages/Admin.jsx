@@ -1,40 +1,51 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-
-// API_BASE_URL 설정
-const API_BASE_URL = 'https://e92b-14-36-206-222.ngrok-free.app';
-
-// Axios 기본 설정
-axios.defaults.baseURL = API_BASE_URL;
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+import api from '../api';
 
 const Admin = () => {
-  const [projectName, setProjectName] = useState('');
-  const [projectDescription, setProjectDescription] = useState('');
+  const [projectName, setProjectName] = useState(localStorage.getItem('projectName') || '');
+  const [projectDescription, setProjectDescription] = useState(localStorage.getItem('projectDescription') || '');
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [userInfo, setUserInfo] = useState({
-    username: '',
+    userID: '',
     password: '',
     email: '',
+    name: '',
     role: 'Developer'
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      console.warn('No token found in localStorage');
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get('/member/allUsers');
+      const fetchedUsers = response.data.list.map(user => ({
+        memberId: user.memberId,
+        userID: user.userId,
+        name: user.userNm,
+        role: user.userRoles,
+        email: user.email || ''
+      }));
+      console.log('Fetched users:', fetchedUsers);
+      setUsers(fetchedUsers);
+      localStorage.setItem('users', JSON.stringify(fetchedUsers));
+    } catch (error) {
+      alert('Error fetching users:', error);
     }
+  };
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    setUsers(storedUsers);
+    fetchUsers();
   }, []);
 
   const handleProjectNameChange = (e) => {
     setProjectName(e.target.value);
+    localStorage.setItem('projectName', e.target.value);
   };
 
   const handleProjectDescriptionChange = (e) => {
     setProjectDescription(e.target.value);
+    localStorage.setItem('projectDescription', e.target.value);
   };
 
   const handleChange = (e) => {
@@ -45,38 +56,115 @@ const Admin = () => {
     });
   };
 
-  const handleAddUser = () => {
-    setUsers([...users, userInfo]);
-    setUserInfo({ username: '', password: '', email: '', role: 'Developer' });
+  const handleAddUser = async () => {
+    const { userID, password, email, name, role } = userInfo;
+    if (!userID || !password || !email || !name || !role) {
+      alert('정보를 모두 입력해주세요');
+      return;
+    }
+
+    try {
+      const existingUser = users.find(user => user.userID === userID);
+      if (existingUser) {
+        alert('해당 userID가 이미 등록되어 있습니다. 정보만 수정됩니다.');
+        await api.put('/member/updateMember', {
+          memberId: existingUser.memberId,
+          userId: userID,
+          userNm: name,
+          userPwd: password,
+          userChkPwd: password,
+          userRoles: role,
+          nickNm: name,
+          email: email,
+          projectNm: projectName
+        });
+        setUsers(users.map(user => (user.userID === userID ? {
+          ...user,
+          name,
+          role,
+          email
+        } : user)));
+        localStorage.setItem('users', JSON.stringify(users.map(user => (user.userID === userID ? {
+          ...user,
+          name,
+          role,
+          email
+        } : user))));
+      } else {
+        const response = await api.post('/member/addMember', {
+          memberId: 0,
+          userId: userID,
+          userNm: name,
+          userPwd: password,
+          userChkPwd: password,
+          userRoles: role,
+          nickNm: name,
+          email: email,
+          projectNm: projectName
+        });
+        alert('User가 추가되었습니다');
+        setUsers([...users, {
+          memberId: response.data.memberId,
+          userID,
+          name,
+          role,
+          email
+        }]);
+        localStorage.setItem('users', JSON.stringify([...users, {
+          memberId: response.data.memberId,
+          userID,
+          name,
+          role,
+          email
+        }]));
+      }
+
+      setUserInfo({ userID: '', password: '', email: '', name: '', role: 'Developer' });
+    } catch (error) {
+      console.error('Error adding/updating user:', error.response ? error.response.data : error.message);
+      alert('사용자 추가/수정에 실패했습니다.');
+    }
   };
 
-  const handleSelectUser = (username) => {
+  const handleSelectUser = (userID) => {
     setSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.includes(username)
-        ? prevSelectedUsers.filter((user) => user !== username)
-        : [...prevSelectedUsers, username]
+      prevSelectedUsers.includes(userID)
+        ? prevSelectedUsers.filter((user) => user !== userID)
+        : [...prevSelectedUsers, userID]
     );
   };
 
-  const handleRemoveSelectedUsers = () => {
-    setUsers(users.filter((user) => !selectedUsers.includes(user.username)));
-    setSelectedUsers([]);
+  const handleRemoveSelectedUsers = async () => {
+    try {
+      await Promise.all(
+        selectedUsers.map(userID =>
+          api.delete(`/member/deleteMember/${userID}`)
+        )
+      );
+      alert('선택된 사용자가 삭제되었습니다.');
+      fetchUsers();
+    } catch (error) {
+      console.error('Error removing users:', error);
+      alert('사용자 삭제에 실패했습니다.');
+    } finally {
+      setSelectedUsers([]);
+    }
   };
 
   const handleSaveProject = async () => {
     try {
-      const response = await axios.post('/project/addProject', {
+      const response = await api.post('/project/addProject', {
         projectNm: projectName,
         projectDesc: projectDescription
       });
-      alert('프로젝트 제목과 상세내용이 저장되었습니다.');
       console.log('Project saved:', response.data);
-      // Optionally reset project details
-      setProjectName('');
-      setProjectDescription('');
+      alert('프로젝트 제목과 상세내용이 저장되었습니다.');
+      // 저장 후에도 로컬 스토리지에 값을 유지
+      localStorage.setItem('projectName', projectName);
+      localStorage.setItem('projectDescription', projectDescription);
     } catch (error) {
-      console.error('Error saving project:', error);
-      alert(`실패: ${error.response ? error.response.data.message : error.message}`);
+      console.error('Error saving project:', error.response ? error.response.data : error.message);
+      alert('프로젝트 저장에 실패했습니다.');
     }
   };
 
@@ -107,7 +195,7 @@ const Admin = () => {
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
         </div>
-        <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-red-600 mb-5" onClick={handleSaveProject}>
+        <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-blue-900 mb-5" onClick={handleSaveProject}>
           Save
         </button>
       </div>
@@ -118,13 +206,13 @@ const Admin = () => {
       <div className="bg-[#DDF1FF] rounded-lg p-5 max-w-2xl mx-auto">
         <div className="mb-5">
           <div className="flex items-center mb-4">
-            <label htmlFor="username" className="w-24 mr-2">User ID:</label>
+            <label htmlFor="userID" className="w-24 mr-2">User ID:</label>
             <input
               type="text"
-              id="username"
-              name="username"
+              id="userID"
+              name="userID"
               placeholder="User ID"
-              value={userInfo.username}
+              value={userInfo.userID}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -149,6 +237,18 @@ const Admin = () => {
               name="email"
               placeholder="e-mail"
               value={userInfo.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="flex items-center mb-4">
+            <label htmlFor="name" className="w-24 mr-2">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={userInfo.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -191,7 +291,7 @@ const Admin = () => {
               </label>
             </div>
           </div>
-          <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-green-600" onClick={handleAddUser}>ADD</button>
+          <button className="bg-[#2353A5] text-white px-3 py-1 rounded hover:bg-blue-900" onClick={handleAddUser}>ADD</button>
         </div>
         <table className="w-full border-collapse mb-5">
           <thead>
@@ -199,6 +299,7 @@ const Admin = () => {
               <th className="border px-4 py-2">Select</th>
               <th className="border px-4 py-2">Role</th>
               <th className="border px-4 py-2">User ID</th>
+              <th className="border px-4 py-2">Name</th>
               <th className="border px-4 py-2">E-mail</th>
             </tr>
           </thead>
@@ -208,18 +309,19 @@ const Admin = () => {
                 <td className="border px-4 py-2 text-center">
                   <input
                     type="checkbox"
-                    checked={selectedUsers.includes(user.username)}
-                    onChange={() => handleSelectUser(user.username)}
+                    checked={selectedUsers.includes(user.userID)}
+                    onChange={() => handleSelectUser(user.userID)}
                   />
                 </td>
                 <td className="border px-4 py-2 text-center">{user.role}</td>
-                <td className="border px-4 py-2 text-center">{user.username}</td>
+                <td className="border px-4 py-2 text-center">{user.userID}</td>
+                <td className="border px-4 py-2 text-center">{user.name}</td>
                 <td className="border px-4 py-2 text-center">{user.email}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onClick={handleRemoveSelectedUsers}>
+        <button className="bg-[#E23812] text-white px-3 py-1 rounded hover:bg-red-700" onClick={handleRemoveSelectedUsers}>
           Remove selected accounts
         </button>
       </div>

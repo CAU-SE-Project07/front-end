@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import logoImage from '../assets/images/logo.png';
 
 export const Header = () => {
@@ -22,7 +22,7 @@ export const Header = () => {
 
   const fetchUserInfo = async (userId) => {
     try {
-      const response = await axios.get(`/member/${userId}`);
+      const response = await api.get(`/member/${userId}`);
       console.log('API 응답 데이터:', response.data); // API 응답 데이터 확인
       setUserInfo(response.data);
     } catch (error) {

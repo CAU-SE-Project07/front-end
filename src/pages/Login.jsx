@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logoImage from '../assets/images/logo_login.png';
-import axios from 'axios';
+import api from '../api';
 
 const Login = () => {
     const [userId, setUserId] = useState('');
@@ -30,21 +30,31 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('/member/login', { userId, userPwd: password });
+            const response = await api.post('/member/login', { userId, userPwd: password });
             const data = response.data;
 
             console.log('로그인 성공:', data);
             alert('로그인에 성공했습니다!');
 
-            localStorage.setItem('user', JSON.stringify({ userId }));
+            localStorage.setItem('user', JSON.stringify({ userId, userRoles: data.userRoles }));
             setLoading(false);
 
             navigate('/');
         } catch (error) {
-            console.error('로그인 실패:', error.response.data.msg);
-            setError(error.response.data.msg);
             setLoading(false);
-            alert('로그인에 실패했습니다: ' + error.response.data.msg);
+            if (error.response) {
+                console.error('로그인 실패:', error.response.data);
+                setError(error.response.data.msg || '로그인에 실패했습니다.');
+                alert('로그인에 실패했습니다: ' + (error.response.data.msg || ''));
+            } else if (error.request) {
+                console.error('로그인 요청 실패:', error.request);
+                setError('서버와 통신할 수 없습니다.');
+                alert('서버와 통신할 수 없습니다.');
+            } else {
+                console.error('로그인 오류:', error.message);
+                setError('알 수 없는 오류가 발생했습니다.');
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
         }
     };
 
