@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import api from '../api';
+import { UserContext } from '../context/UserContext';
 
 function IssueUploadPage() {
+  const { user } = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('major');
@@ -19,23 +22,42 @@ function IssueUploadPage() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      alert('로그인 상태를 확인할 수 없습니다. 다시 로그인해 주세요.');
+      return;
+    }
+    const date = new Date();
+    const seoulTime = new Intl.DateTimeFormat('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Seoul',
+    }).format(date);
     try {
-      const response = await fetch('http://localhost:8080/api/issues', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title, description, priority }),
+      const response = await api.post('/issue/addIssue', {
+        title,
+        description,
+        priority,
+        userId: user.userId,
+        date: seoulTime
       });
-      if (response.ok) {
-        // 이슈가 성공적으로 생성된 경우
-        console.log('이슈가 성공적으로 생성되었습니다.');
+
+      if (response.status >= 200 && response.status < 300) {
+        alert('이슈가 성공적으로 생성되었습니다.');
+        setTitle('');
+        setDescription('');
+        setPriority('major');
       } else {
-        // 오류가 발생한 경우
-        console.error('이슈 생성에 실패했습니다.');
+        alert('이슈 생성에 실패했습니다.');
+        console.error('응답 상태 코드:', response.status);
+        console.error('응답 데이터:', response.data);
       }
     } catch (error) {
       console.error('API 호출 중 오류가 발생했습니다:', error);
+      alert('API 호출 중 오류가 발생했습니다: ' + error.message);
     }
   };
 
@@ -81,7 +103,7 @@ function IssueUploadPage() {
         </div>
         <button
           type="submit"
-          className="bg-blue-900 text-white py-2 px-4 rounded mx-auto w-1/5" >
+          className="bg-blue-900 text-white py-2 px-4 rounded mx-auto w-1.7/5" >
           이슈 만들기
         </button>
       </form>

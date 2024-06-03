@@ -6,7 +6,7 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordMatch, setPasswordMatch] = useState(true); // 비밀번호 일치 여부
+    const [passwordMatch, setPasswordMatch] = useState(true);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);

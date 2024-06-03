@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logoImage from '../assets/images/logo_login.png';
+import logoImage from '../assets/images/logo.png';
 import api from '../api';
+import { UserContext } from '../context/UserContext';
 
 const Login = () => {
+    const { setUser } = useContext(UserContext);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [rememberPassword, setRememberPassword] = useState(false);
@@ -33,28 +35,24 @@ const Login = () => {
             const response = await api.post('/member/login', { userId, userPwd: password });
             const data = response.data;
 
-            console.log('로그인 성공:', data);
-            alert('로그인에 성공했습니다!');
-
-            localStorage.setItem('user', JSON.stringify({ userId, userRoles: data.userRoles }));
-            setLoading(false);
-
-            navigate('/');
-        } catch (error) {
-            setLoading(false);
-            if (error.response) {
-                console.error('로그인 실패:', error.response.data);
-                setError(error.response.data.msg || '로그인에 실패했습니다.');
-                alert('로그인에 실패했습니다: ' + (error.response.data.msg || ''));
-            } else if (error.request) {
-                console.error('로그인 요청 실패:', error.request);
-                setError('서버와 통신할 수 없습니다.');
-                alert('서버와 통신할 수 없습니다.');
+            if (data.code === 200) {
+                console.log('로그인 성공:', data);
+                alert('로그인에 성공했습니다!');
+                const userData = { userId, userRoles: data.userRoles };
+                localStorage.setItem('user', JSON.stringify(userData));
+                setUser(userData);
+                navigate('/');
             } else {
-                console.error('로그인 오류:', error.message);
-                setError('알 수 없는 오류가 발생했습니다.');
-                alert('알 수 없는 오류가 발생했습니다.');
+                console.error('로그인 실패:', data);
+                setError(data.msg || '로그인에 실패했습니다.');
+                alert('로그인에 실패했습니다: ' + (data.msg || ''));
             }
+        } catch (error) {
+            console.error('로그인 오류:', error);
+            setError('서버와 통신할 수 없습니다.');
+            alert('서버와 통신할 수 없습니다.');
+        } finally {
+            setLoading(false);
         }
     };
 
